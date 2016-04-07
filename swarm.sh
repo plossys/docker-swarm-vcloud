@@ -3,6 +3,8 @@
 if [ ! -e /usr/bin/docker ]; then
 	curl https://get.docker.com | sh
 	sudo usermod -aG docker vagrant
+	echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375"' | sudo tee -a /etc/default/docker
+	sudo service docker restart
 fi
 
 function getmyip() { (tail -1 /etc/hosts | cut -f 1) }
