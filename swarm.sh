@@ -3,9 +3,11 @@
 if [ ! -e /usr/bin/docker ]; then
 	curl https://get.docker.com | sh
 	sudo usermod -aG docker vagrant
-	echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375"' | sudo tee -a /etc/default/docker
-	sudo service docker restart
 fi
+
+sudo sed -i '/^DOCKER_OPTS.*/d' /etc/default/docker
+echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375 --cluster-store=consul://192.168.1.2:8500 --cluster-advertise=eth0:0"' | sudo tee -a /etc/default/docker
+sudo service docker restart
 
 function getmyip() { (tail -1 /etc/hosts | cut -f 1) }
 
