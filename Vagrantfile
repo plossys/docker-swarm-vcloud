@@ -65,7 +65,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       # Forward ports to registry and swarm manager
       if server['name'] == 'swarm-01'
-        srv.vm.network :forwarded_port, guest: 2375, host: 2375, id: "swarm", auto_correct: true
+        srv.vm.network :forwarded_port, guest: 8333, host: 8333, id: "swarm", auto_correct: true
         srv.vm.network :forwarded_port, guest: 5000, host: 5000, id: "registry", auto_correct: true
       end
 
