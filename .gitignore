@@ -1,2 +1,3 @@
-consul-*.json
 .vagrant/
+consul-*.json
+swarm.sh

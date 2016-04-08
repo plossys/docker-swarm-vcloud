@@ -32,6 +32,14 @@ servers.each do |server|
   end
 end # servers.each
 
+# Build a swarm.sh file from ERB template
+template = File.join(File.dirname(__FILE__), 'swarm.sh.erb')
+content = ERB.new File.new(template).read
+target = File.join(File.dirname(__FILE__), "swarm.sh")
+consul_ip = servers[0]['priv_ip'] # ip address of consul-01
+registry_ip = servers[3]['priv_ip'] # ip address swarm-01
+File.open(target, 'w') { |f| f.write(content.result(binding)) }
+
 # Create and configure the VMs
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
