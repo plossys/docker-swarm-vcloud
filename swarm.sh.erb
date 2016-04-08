@@ -18,7 +18,7 @@ if [ ! -e /usr/bin/docker ]; then
 fi
 
 sudo sed -i '/^DOCKER_OPTS.*/d' /etc/default/docker
-echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375 --insecure-registry <%= registry_ip %>:5000 --cluster-store=consul://<%= consul_ip %>:8500 --cluster-advertise=eth0:0"' | sudo tee -a /etc/default/docker
+echo "DOCKER_OPTS=\"-H unix:// -H tcp://0.0.0.0:2375 --insecure-registry <%= registry_ip %>:5000 --cluster-store=consul://<%= consul_ip %>:8500 --cluster-advertise=${myIP}:0\"" | sudo tee -a /etc/default/docker
 sudo service docker restart
 
 docker kill consul registrator swarm manage registry
