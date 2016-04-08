@@ -18,7 +18,7 @@ servers = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
 consul_cluster_list = []
 servers.each do |server|
   if server['name'].match(/^consul/)
-    consul_cluster_list << "\"#{server['priv_ip']}\""
+    consul_cluster_list << "\"#{server['ip']}\""
   end
 end # servers.each
 
@@ -36,8 +36,8 @@ end # servers.each
 template = File.join(File.dirname(__FILE__), 'swarm.sh.erb')
 content = ERB.new File.new(template).read
 target = File.join(File.dirname(__FILE__), "swarm.sh")
-consul_ip = servers[0]['priv_ip'] # ip address of consul-01
-registry_ip = servers[3]['priv_ip'] # ip address swarm-01
+consul_ip = servers[0]['ip'] # ip address of consul-01
+registry_ip = servers[3]['ip'] # ip address swarm-01
 File.open(target, 'w') { |f| f.write(content.result(binding)) }
 
 # Create and configure the VMs
@@ -61,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv.vm.hostname = server['name']
       srv.vm.box = server['box']
       # Assign an additional static private network
-      srv.vm.network 'private_network', ip: server['priv_ip']
+      srv.vm.network 'private_network', ip: server['ip']
 
       # Forward ports to registry and swarm manager
       if server['name'] == 'swarm-01'
@@ -71,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       # Configure docker swarm box
       if server['name'].match(/^swarm/)
-        srv.vm.provision 'shell', path: 'swarm.sh', args: server['priv_ip']
+        srv.vm.provision 'shell', path: 'swarm.sh', args: server['ip']
       end
 
       # Configure consul box
