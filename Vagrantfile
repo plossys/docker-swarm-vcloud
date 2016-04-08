@@ -71,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       # Configure docker swarm box
       if server['name'].match(/^swarm/)
-        srv.vm.provision 'shell', path: 'swarm.sh'
+        srv.vm.provision 'shell', path: 'swarm.sh', args: server['priv_ip']
       end
 
       # Configure consul box
