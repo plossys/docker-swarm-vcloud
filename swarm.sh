@@ -6,7 +6,7 @@ if [ ! -e /usr/bin/docker ]; then
 fi
 
 sudo sed -i '/^DOCKER_OPTS.*/d' /etc/default/docker
-echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375 --cluster-store=consul://192.168.1.2:8500 --cluster-advertise=eth0:0"' | sudo tee -a /etc/default/docker
+echo 'DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:2375 --insecure-registry 192.168.1.5:5000 --cluster-store=consul://192.168.1.2:8500 --cluster-advertise=eth0:0"' | sudo tee -a /etc/default/docker
 sudo service docker restart
 
 function getmyip() { (tail -1 /etc/hosts | cut -f 1) }
@@ -24,4 +24,8 @@ docker run -d --restart=always --name swarm swarm join --addr=$(getmyip):2375 co
 
 if [ $(hostname) == 'swarm-01' ]; then
 	docker run -d -p 8333:2375 --restart=always --name manage swarm manage consul://$(getmyip):8500/swarm
+
+  # Create internal docker registry to avoid building images (https://docs.docker.com/compose/swarm/#limitations)
+	mkdir -p /vagrant/registry-v2
+	docker run -d -p 5000:5000 --restart=always --name registry -v "/vagrant/registry-v2:/var/lib/registry" registry:2.3.0
 fi
