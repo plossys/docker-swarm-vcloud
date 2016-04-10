@@ -63,10 +63,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Assign an additional static private network
       srv.vm.network 'private_network', ip: server['ip']
 
-      # Forward ports to registry and swarm manager
+      # Forward port to swarm manager
       if server['name'] == 'swarm-01'
         srv.vm.network :forwarded_port, guest: 8333, host: 8333, id: "swarm", auto_correct: true
-        srv.vm.network :forwarded_port, guest: 5000, host: 5000, id: "registry", auto_correct: true
       end
 
       # Configure docker swarm box
